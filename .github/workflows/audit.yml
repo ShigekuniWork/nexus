@@ -1,0 +1,35 @@
+name: Audit
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "**/Cargo.toml"
+  schedule:
+    # run at 2AM UTC
+    - cron: '0 2 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    permissions:
+      # for rustsec/audit-check to create check
+      checks: write
+      # for rustsec/audit-check to create check
+      contents: read
+      # for rustsec/audit-check to create issues
+      issues: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate Cargo.lock
+        run: cargo generate-lockfile
+
+      - name: Audit Check
+        uses: rustsec/audit-check@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
