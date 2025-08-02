@@ -2,7 +2,8 @@ use tracing::info;
 use tracing_subscriber::prelude::*;
 use tracing_subscriber::{EnvFilter, fmt};
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let fmt_layer = fmt::layer().with_level(true).with_target(true).compact();
 
     // The default logging level is `info`.
